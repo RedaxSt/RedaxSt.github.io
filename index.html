@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RedaX – GTA VI RPF9 Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Sora:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0612; --bg2:#140a24; --card:rgba(24,14,42,.72); --line:rgba(255,255,255,.1);
+  --text:#f5efff; --muted:#a99cc6; --pink:#ff2e93; --orange:#ff8a2b; --yellow:#ffd23f; --teal:#22e6d0; --purple:#8a3cff;
+  color-scheme:dark; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:70px;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Sora',system-ui,sans-serif;line-height:1.65;overflow-x:hidden}
+a{color:inherit}
+.display{font-family:'Anton','Impact',sans-serif;text-transform:uppercase;letter-spacing:.02em;font-weight:400}
+.grad{background:linear-gradient(180deg,var(--yellow),var(--orange) 40%,var(--pink) 75%,var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* background layer */
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+#stars i{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;opacity:.2;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{opacity:.95;transform:scale(1.8)}}
+.orb{position:fixed;z-index:0;border-radius:50%;filter:blur(110px);pointer-events:none;opacity:.35}
+.o1{width:480px;height:480px;background:var(--pink);top:-120px;left:-140px;animation:drift 18s ease-in-out infinite alternate}
+.o2{width:520px;height:520px;background:var(--purple);bottom:-180px;right:-160px;animation:drift 22s ease-in-out infinite alternate-reverse}
+@keyframes drift{to{transform:translate(90px,70px) scale(1.15)}}
+main,nav,footer{position:relative;z-index:1}
+
+/* nav */
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px max(22px,calc((100% - 1100px)/2));backdrop-filter:blur(14px);background:rgba(10,6,18,.6);border-bottom:1px solid var(--line)}
+.logo{font-size:1.7rem;text-decoration:none;line-height:1}
+nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0;font-size:.9rem;color:var(--muted)}
+nav ul a{text-decoration:none;transition:color .2s}nav ul a:hover{color:var(--pink)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 22px}
+
+/* hero */
+.hero{position:relative;min-height:calc(100vh - 62px);min-height:calc(100svh - 62px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 22px 140px;overflow:hidden}
+.sun{position:absolute;left:50%;bottom:90px;width:min(560px,90vw);aspect-ratio:1;transform:translateX(-50%);border-radius:50%;
+  background:linear-gradient(180deg,var(--yellow) 0%,var(--orange) 35%,var(--pink) 70%,var(--purple) 100%);
+  -webkit-mask-image:repeating-linear-gradient(180deg,#000 0 14px,transparent 14px 18px);mask-image:repeating-linear-gradient(180deg,#000 0 14px,transparent 14px 18px);
+  -webkit-mask-size:100% 100%;opacity:.9;animation:sunpulse 6s ease-in-out infinite;filter:drop-shadow(0 0 60px rgba(255,46,147,.6))}
+.sun::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,var(--bg) 100%)}
+@keyframes sunpulse{50%{transform:translateX(-50%) scale(1.05);filter:drop-shadow(0 0 90px rgba(255,138,43,.7))}}
+.floor{position:absolute;left:-50%;right:-50%;bottom:0;height:260px;perspective:380px;overflow:hidden}
+.floor::before{content:"";position:absolute;inset:-100% 0 0 0;transform:rotateX(62deg);transform-origin:50% 100%;
+  background:linear-gradient(var(--pink) 2px,transparent 2px) 0 0/100% 56px,linear-gradient(90deg,var(--pink) 2px,transparent 2px) 0 0/70px 100%;
+  opacity:.5;animation:grid 1.6s linear infinite;-webkit-mask-image:linear-gradient(0deg,#000 20%,transparent);mask-image:linear-gradient(0deg,#000 20%,transparent)}
+@keyframes grid{to{background-position:0 56px,0 0}}
+.palm{position:absolute;bottom:0;height:min(60vh,460px);opacity:.95;transform-origin:bottom center;animation:sway 7s ease-in-out infinite alternate}
+.palm.l{left:-20px}.palm.r{right:-20px;transform:scaleX(-1);animation-name:swayr}
+@keyframes sway{from{transform:rotate(-1.5deg)}to{transform:rotate(2deg)}}
+@keyframes swayr{from{transform:scaleX(-1) rotate(-1.5deg)}to{transform:scaleX(-1) rotate(2deg)}}
+.hero>*:not(.sun):not(.floor):not(.palm){position:relative;z-index:3}
+.badge{display:inline-flex;align-items:center;gap:10px;padding:7px 16px;border:1px solid rgba(255,46,147,.5);border-radius:99px;font-size:.82rem;background:rgba(255,46,147,.1);color:#ffc2e0}
+.badge b{width:8px;height:8px;border-radius:50%;background:var(--pink);box-shadow:0 0 12px var(--pink);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+h1{font-size:clamp(5rem,22vw,13rem);line-height:.9;margin:22px 0 8px;position:relative;animation:rise 1s cubic-bezier(.2,.8,.2,1) both;filter:drop-shadow(0 0 30px rgba(255,46,147,.45))}
+h1::before,h1::after{content:attr(data-t);position:absolute;inset:0;-webkit-text-fill-color:transparent;pointer-events:none}
+h1::before{-webkit-text-stroke:1px var(--teal);transform:translate(4px,3px);opacity:.6;animation:glitch 5s steps(1) infinite}
+@keyframes glitch{0%,92%,100%{transform:translate(4px,3px)}93%{transform:translate(-6px,-2px)}95%{transform:translate(8px,2px)}97%{transform:translate(-3px,4px)}}
+@keyframes rise{from{opacity:0;transform:translateY(40px) scale(.96)}}
+.sub{font-size:clamp(1.1rem,3vw,1.7rem);letter-spacing:.06em;margin:0 0 12px;animation:rise 1s .15s both;text-shadow:0 0 24px rgba(0,0,0,.8)}
+.lead{max-width:540px;color:#d8cdef;margin:0 0 32px;animation:rise 1s .3s both;text-shadow:0 0 18px rgba(0,0,0,.9)}
+.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:rise 1s .45s both}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border-radius:14px;font:600 .98rem 'Sora',sans-serif;text-decoration:none;color:var(--text);background:rgba(20,10,36,.7);border:1px solid var(--line);backdrop-filter:blur(8px);cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s}
+.btn:hover{transform:translateY(-3px);border-color:var(--teal);box-shadow:0 10px 30px rgba(34,230,208,.25)}
+.btn:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+.btn.primary{background:linear-gradient(95deg,var(--pink),var(--orange));border:0;color:#fff}
+.btn[disabled]{cursor:not-allowed;filter:saturate(.7);opacity:.85}
+.btn[disabled]:hover{transform:none;box-shadow:none}
+.btn[disabled]::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:shine 3s infinite}
+@keyframes shine{to{left:130%}}
+.soon{font-size:.7rem;padding:2px 9px;border-radius:99px;background:rgba(0,0,0,.35);letter-spacing:.06em}
+
+/* marquee */
+.marquee{position:relative;z-index:2;overflow:hidden;border-block:1px solid var(--line);background:rgba(138,60,255,.12);padding:14px 0;transform:rotate(-1.2deg);margin:-30px -20px 0}
+.track{display:flex;gap:46px;width:max-content;animation:scroll 28s linear infinite;font-size:1.4rem;white-space:nowrap}
+.track span:nth-child(even){color:var(--pink)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* sections */
+section{padding:110px 0 0}
+.tag{display:inline-block;color:var(--teal);font-size:.85rem;margin-bottom:10px}
+h2{font-size:clamp(2.4rem,6vw,4rem);line-height:1;margin:0 0 14px}
+.intro{color:var(--muted);max-width:620px;margin:0 0 44px}
+.about{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center}
+.about .big{padding:34px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(255,46,147,.18),rgba(138,60,255,.14));font-size:1.2rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.feat{position:relative;padding:28px;background:var(--card);border:1px solid var(--line);border-radius:20px;backdrop-filter:blur(8px);overflow:hidden;transition:transform .3s,border-color .3s}
+.feat::before{content:"";position:absolute;inset:0;background:radial-gradient(260px circle at var(--x,50%) var(--y,0%),rgba(255,46,147,.22),transparent 60%);opacity:0;transition:opacity .3s}
+.feat:hover{transform:translateY(-6px);border-color:rgba(255,46,147,.55)}
+.feat:hover::before{opacity:1}
+.feat h3{margin:0 0 8px;font-size:1.7rem;position:relative}
+.feat p{margin:0;color:var(--muted);position:relative}
+.chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.chip{padding:24px;border-radius:18px;border:1px solid var(--line);background:var(--card);transition:transform .3s,border-color .3s}
+.chip:hover{transform:translateY(-4px);border-color:var(--teal)}
+.chip small{display:block;color:var(--muted);font-size:.8rem}
+.chip strong{font-size:1.5rem;font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.03em;color:var(--teal)}
+.fmt{display:flex;flex-wrap:wrap;gap:20px;align-items:center;padding:30px;border-radius:20px;border:1px solid var(--line);background:var(--card)}
+.fmt code{font-size:2rem;color:var(--yellow);font-family:'Anton',sans-serif}
+.fmt p{margin:0;color:var(--muted)}
+.release{margin-top:120px;padding:70px 24px;text-align:center;border-radius:28px;position:relative;overflow:hidden;border:1px solid rgba(255,46,147,.4);background:linear-gradient(160deg,rgba(255,46,147,.25),rgba(138,60,255,.2) 60%,rgba(255,138,43,.18))}
+.release::before{content:"";position:absolute;inset:-60%;background:conic-gradient(from 0deg,transparent,rgba(255,210,63,.18),transparent 30%);animation:spin 12s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.release>*{position:relative}
+.release p{color:#e2d6f7;max-width:520px;margin:0 auto 28px}
+footer{margin-top:110px;padding:40px 22px 56px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:.85rem}
+footer .logo{display:block;font-size:2rem;margin-bottom:4px}
+footer p{max-width:680px;margin:16px auto 0}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+@media(max-width:760px){nav ul{display:none}.about{grid-template-columns:1fr}.palm{opacity:.6}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div id="stars" aria-hidden="true"></div>
+<div class="orb o1" aria-hidden="true"></div><div class="orb o2" aria-hidden="true"></div>
+
+<nav>
+  <a class="logo display" href="#top">Reda<span class="grad">X</span></a>
+  <ul><li><a href="#about">About</a></li><li><a href="#features">Features</a></li><li><a href="#formats">Formats</a></li><li><a href="#tech">Technology</a></li><li><a href="#release">Release</a></li></ul>
+</nav>
+
+<main>
+<header class="hero" id="top">
+  <div class="sun" aria-hidden="true"></div>
+  <svg class="palm l" viewBox="0 0 260 480" aria-hidden="true"><g fill="none" stroke="#05030a" stroke-linecap="round"><path d="M120 480 C125 380 140 300 170 200" stroke-width="14"/><path d="M170 200 C120 160 70 170 20 215" stroke-width="9"/><path d="M170 200 C140 140 90 110 40 120" stroke-width="9"/><path d="M170 200 C185 130 215 95 250 85" stroke-width="9"/><path d="M170 200 C220 170 250 175 262 210" stroke-width="9"/><path d="M170 200 C165 150 150 120 120 90" stroke-width="9"/></g></svg>
+  <svg class="palm r" viewBox="0 0 260 480" aria-hidden="true"><g fill="none" stroke="#05030a" stroke-linecap="round"><path d="M120 480 C125 380 140 300 170 200" stroke-width="14"/><path d="M170 200 C120 160 70 170 20 215" stroke-width="9"/><path d="M170 200 C140 140 90 110 40 120" stroke-width="9"/><path d="M170 200 C185 130 215 95 250 85" stroke-width="9"/><path d="M170 200 C220 170 250 175 262 210" stroke-width="9"/><path d="M170 200 C165 150 150 120 120 90" stroke-width="9"/></g></svg>
+  <div class="floor" aria-hidden="true"></div>
+
+  <span class="badge"><b></b>In development · first release coming soon</span>
+  <h1 class="display grad" data-t="RedaX">RedaX</h1>
+  <p class="sub display">Next-generation GTA VI RPF9 Explorer</p>
+  <p class="lead">A dedicated Windows application for exploring and inspecting Grand Theft Auto VI game archives.</p>
+  <div class="btns">
+    <button class="btn primary" disabled aria-disabled="true">Download for Windows <span class="soon">COMING SOON</span></button>
+    <a class="btn" href="RedaxSt.github.io" id="gh">View on GitHub</a>
+    <a class="btn" href="#features">Explore features</a>
+  </div>
+</header>
+
+<div class="marquee display" aria-hidden="true"><div class="track">
+  <span>RPF9 Explorer</span><span>3D Models</span><span>TTPF Textures</span><span>Shaders</span><span>Edit &amp; Replace</span><span>.NET 10</span>
+  <span>RPF9 Explorer</span><span>3D Models</span><span>TTPF Textures</span><span>Shaders</span><span>Edit &amp; Replace</span><span>.NET 10</span>
+</div></div>
+
+<div class="wrap">
+  <section id="about">
+    <div class="about">
+      <div class="rv">
+        <span class="tag">About</span>
+        <h2 class="display grad">Built for Leonida’s files</h2>
+        <p class="intro" style="margin:0">RedaX is an independent RPF9 exploration tool made to simplify navigating and inspecting Grand Theft Auto VI game files. It brings a clean, efficient desktop experience to the RAGE engine’s archives.</p>
+      </div>
+      <div class="big rv">Open an archive. Inspect what’s inside. Browse every entry, all in one modern interface.</div>
+    </div>
+  </section>
+
+  <section id="features">
+    <span class="tag rv">Features</span>
+    <h2 class="display rv">Everything you need <span class="grad">inside the archive</span></h2>
+    <p class="intro rv">Archive, model, texture and shader tools for exploring GTA VI’s next-generation RAGE engine files, with editing and replacing built in.</p>
+    <div class="grid">
+      <div class="feat rv"><h3 class="display grad">RPF9 Archive Explorer</h3><p>Open and explore GTA VI RPF9 archives.</p></div>
+      <div class="feat rv"><h3 class="display grad">3D Model Viewer</h3><p>Preview 3D models found inside the archives.</p></div>
+      <div class="feat rv"><h3 class="display grad">TTPF Texture Explorer</h3><p>Browse and inspect TTPF textures from the game files.</p></div>
+      <div class="feat rv"><h3 class="display grad">Shader Explorer</h3><p>Look through the game’s shaders in a dedicated view.</p></div>
+      <div class="feat rv"><h3 class="display grad">Edit &amp; Replace</h3><p>Edit entries and replace files inside archives.</p></div>
+      <div class="feat rv"><h3 class="display grad">Archive inspection</h3><p>Inspect archive information and every available file entry.</p></div>
+      <div class="feat rv"><h3 class="display grad">File browsing</h3><p>Navigate discovered archive contents through a desktop interface.</p></div>
+      <div class="feat rv"><h3 class="display grad">Modern GUI</h3><p>A dedicated Windows app designed around a clean experience.</p></div>
+      <div class="feat rv"><h3 class="display grad">Performance focused</h3><p>Built on modern .NET technology for speed.</p></div>
+      <div class="feat rv"><h3 class="display grad">GTA VI focused</h3><p>Made specifically for the next generation of RAGE engine game files.</p></div>
+    </div>
+  </section>
+
+  <section id="formats">
+    <span class="tag rv">Supported formats</span>
+    <h2 class="display rv">Formats</h2>
+    <div class="chips">
+      <div class="chip rv"><strong>.rpf (RPF9)</strong><small>Archive exploration and inspection</small></div>
+      <div class="chip rv"><strong>.ydr</strong><small>Drawable models</small></div>
+      <div class="chip rv"><strong>.yft</strong><small>Fragment models</small></div>
+      <div class="chip rv"><strong>.ytd</strong><small>Texture dictionaries</small></div>
+      <div class="chip rv"><strong>.ttpf</strong><small>Textures</small></div>
+      <div class="chip rv"><strong>.awc</strong><small>Audio containers</small></div>
+      <div class="chip rv"><strong>.ynv</strong><small>Navigation meshes</small></div>
+    </div>
+    <p class="note rv" style="color:var(--muted);margin-top:18px">More formats will be documented as development progresses.</p>
+  </section>
+
+  <section id="tech">
+    <span class="tag rv">Technology</span>
+    <h2 class="display rv">Under the hood</h2>
+    <div class="chips">
+      <div class="chip rv"><small>Framework</small><strong>.NET 10</strong></div>
+      <div class="chip rv"><small>Platform</small><strong>Windows</strong></div>
+      <div class="chip rv"><small>Architecture</small><strong>x64</strong></div>
+      <div class="chip rv"><small>Target</small><strong>GTA VI RAGE Engine</strong></div>
+    </div>
+  </section>
+
+  <div class="release rv" id="release">
+    <h2 class="display grad">Coming soon</h2>
+    <p>RedaX is currently under development. Official builds and release information will be published on GitHub.</p>
+    <div class="btns">
+      <button class="btn primary" disabled aria-disabled="true">Download for Windows <span class="soon">COMING SOON</span></button>
+      <a class="btn" href="#">Follow on GitHub</a>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer>
+  <a class="logo display" href="#top">Reda<span class="grad">X</span></a>
+  Explore beyond the archive.
+  <p>RedaX is an independent community-developed project. It is not affiliated with, endorsed by, or sponsored by Rockstar Games or Take-Two Interactive. Grand Theft Auto and RAGE are trademarks of their respective owners.</p>
+</footer>
+
+<script>
+(function(){
+  var s=document.getElementById('stars');
+  for(var i=0;i<70;i++){var d=document.createElement('i');d.style.left=Math.random()*100+'%';d.style.top=Math.random()*100+'%';d.style.animationDelay=(Math.random()*3)+'s';d.style.animationDuration=(2+Math.random()*3)+'s';s.appendChild(d);}
+  var els=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}})},{threshold:.15});
+    els.forEach(function(el,i){el.style.transitionDelay=((i%3)*90)+'ms';io.observe(el)});
+  }else{els.forEach(function(el){el.classList.add('in')})}
+  document.querySelectorAll('.feat').forEach(function(c){c.addEventListener('pointermove',function(e){var r=c.getBoundingClientRect();c.style.setProperty('--x',(e.clientX-r.left)+'px');c.style.setProperty('--y',(e.clientY-r.top)+'px');});});
+})();
+</script>
+</body>
+</html>
